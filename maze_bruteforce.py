@@ -4,7 +4,7 @@ def maze():
 	next_x, next_y = None, None
 	possible_moves_all = []
 	
-	for _ in range(G_plot_count):
+	for _ in range(globals["plot_count"]):
 		possible_moves_all.append(None)
 	
 	for i in range(5):
@@ -22,7 +22,7 @@ def maze():
 		moves_performed = []
 		possible_moves = []
 		
-		for _ in range(G_plot_count):
+		for _ in range(globals["plot_count"]):
 			possible_moves.append(None)
 		
 		def get_opposite_move(mm):

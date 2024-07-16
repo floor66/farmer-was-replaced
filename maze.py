@@ -1,4 +1,4 @@
-G_world_size = get_world_size()
+globals["world_size"] = get_world_size()
 
 def reconstruct_path(parents, current, start):
 	path = []

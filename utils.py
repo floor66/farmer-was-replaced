@@ -1,8 +1,8 @@
 def coords_to_idx(x, y):
-	return (x * G_world_size) + y
+	return (x * globals["world_size"]) + y
 		
 def idx_to_coords(idx):
-	return (idx // G_world_size, idx % G_world_size)
+	return (idx // globals["world_size"], idx % globals["world_size"])
 
 def get_pos():
 	pos_x = get_pos_x()
@@ -17,26 +17,26 @@ def init_list(n, withValue=None):
 
 # Infinity doesnt exist in the game so we crudely implement it
 def infinity():
-	return 1000000000000 * (G_world_size*G_world_size)
+	return 1000000000000 * (globals["world_size"]*globals["world_size"])
 
 def move_():
-	new_direction = G_current_direction
+	new_direction = globals["current_direction"]
 	
-	if G_current_direction == North:
-		dir_change = G_pos_y == (G_world_size - 1)
-	elif G_current_direction == South:
-		dir_change = G_pos_y == 0
+	if globals["current_direction"] == North:
+		dir_change = globals["pos_y"] == (globals["world_size"] - 1)
+	elif globals["current_direction"] == South:
+		dir_change = globals["pos_y"] == 0
 	
 	if dir_change:
 		move(East)
 		
-		if G_current_direction == North:
+		if globals["current_direction"] == North:
 			new_direction = South
-		elif G_current_direction == South:
+		elif globals["current_direction"] == South:
 			new_direction = North
 	
-	if G_current_direction == new_direction:
-		move(G_current_direction)
+	if globals["current_direction"] == new_direction:
+		move(globals["current_direction"])
 	
 	return new_direction
 
@@ -45,14 +45,14 @@ def move_():
 def moveTo(dest_x, dest_y):
 	moves = []
 	
-	diff_x = dest_x - G_pos_x
+	diff_x = dest_x - globals["pos_x"]
 	dir = East
 	if diff_x < 0:
 		dir = West
 	for i in range(abs(diff_x)):
 		moves.insert(i, dir)
 	
-	diff_y = dest_y - G_pos_y
+	diff_y = dest_y - globals["pos_y"]
 	dir = North
 	if diff_y < 0:
 		dir = South
@@ -66,9 +66,9 @@ def largest_sunflower_idx():
 	largest = -1
 	largest_idx = -1
 	
-	for i in range(len(G_sunflower_sizes)):
-		if G_sunflower_sizes[i] > largest:
-			largest = G_sunflower_sizes[i]
+	for i in range(len(globals["sunflower_sizes"])):
+		if globals["sunflower_sizes"][i] > largest:
+			largest = globals["sunflower_sizes"][i]
 			largest_idx = i
 	
 	return largest_idx

@@ -1,14 +1,14 @@
 def wood():
-	if G_pos_y % 2 == 0 and G_pos_x % 2 == 0:
+	if globals["pos_y"] % 2 == 0 and globals["pos_x"] % 2 == 0:
 		plant(Entities.Tree)
 	else:
-		if G_secondary_item == Items.Wood:
+		if globals["secondary_item"] == Items.Wood:
 			plant(Entities.Bush)
-		elif G_secondary_item == Items.Hay:
+		elif globals["secondary_item"] == Items.Hay:
 			pass
-		elif G_secondary_item == Items.Carrot:
+		elif globals["secondary_item"] == Items.Carrot:
 			carrots()
-		elif G_secondary_item == Items.Power:
+		elif globals["secondary_item"] == Items.Power:
 			sunflowers()
 		else:
 			rnd = random()
@@ -26,10 +26,10 @@ def sunflowers():
 		if not trade(Items.Sunflower_Seed):
 			return False
 	
-	if G_ground_type != Grounds.Soil:
+	if globals["ground_type"] != Grounds.Soil:
 		till()
 	
-	if G_entity_type != Entities.Sunflower:
+	if globals["entity_type"] != Entities.Sunflower:
 		plant(Entities.Sunflower)
 	
 	return True
@@ -40,20 +40,20 @@ def sunflower_harvest():
 		success = fertilize()
 	harvest()
 	
-	sunflower_sizes = G_sunflower_sizes
-	sunflower_sizes[G_idx] = -1
+	sunflower_sizes = globals["sunflower_sizes"]
+	sunflower_sizes[globals["idx"]] = -1
 	
-	return success, G_sunflower_count - 1, sunflower_sizes
+	return success, globals["sunflower_count"] - 1, sunflower_sizes
 
 def carrots():
 	if num_items(Items.Carrot_Seed) == 0:
 		if not trade(Items.Carrot_Seed):
 			return False
 		
-	if G_ground_type != Grounds.Soil:
+	if globals["ground_type"] != Grounds.Soil:
 		till()
 	
-	if G_entity_type != Entities.Carrots:
+	if globals["entity_type"] != Entities.Carrots:
 		plant(Entities.Carrots)
 	
 	return True
@@ -63,10 +63,10 @@ def pumpkins():
 		if not trade(Items.Pumpkin_Seed):
 			return False
 		
-	if G_ground_type != Grounds.Soil:
+	if globals["ground_type"] != Grounds.Soil:
 		till()
 		
-	if G_entity_type != Entities.Pumpkin:
+	if globals["entity_type"] != Entities.Pumpkin:
 		plant(Entities.Pumpkin)
 
 def fertilize(do_wait=True):
