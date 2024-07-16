@@ -5,29 +5,26 @@ def solve_bfs(graph, current, target_node, visited=None, path=None):
 	if path == None:
 		path = []
 	
-	if current == target_node:
-		return path
-	
 	visited.add(current)
 
+	if target_node in graph[current]:
+		return path + [target_node]
+	
 	for neighbour in graph[current]:
-		if not (neighbour in graph):
-			continue
-
-		if not (neighbour in visited):
+		if neighbour in graph and not (neighbour in visited):
 			new_path = solve_bfs(graph, neighbour, target_node, visited, path + [neighbour])
 			if new_path != False:
 				return new_path
-
+	
 	return False
 
 def solve_bfs_it(graph, start, target_node):
 	queue = [start]
 	visited = set([start])
 	parents = {}
-			
+	
 	if start == target_node:
-		return True
+		return reconstruct_path(parents, current, start)
 	
 	while len(queue) > 0:
 		current = queue.pop(0)

@@ -1,4 +1,4 @@
-clear()
+# clear()
 
 globals = {
 	"world_size": get_world_size(),
@@ -95,6 +95,6 @@ def main():
 # Entry point
 start_count = get_op_count()
 start_time = get_time()
-if maze(25):
+if maze(25): #, [solve_bfs], ["bfs (rec)"]):
 	print(get_op_count() - start_count, "ops in", get_time() - start_time, "sec")
 	# harvest()
