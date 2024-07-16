@@ -24,9 +24,9 @@ while True:
 	globals["world_size"] = get_world_size()
 	globals["plot_count"] = globals["world_size"]*globals["world_size"]
 	globals["entity_type"] = get_entity_type()
-	globals["pos_x"], globals["pos_y"], globals["idx"] = get_pos()
+	globals["pos_x"], globals["pos_y"], globals["pos_idx"] = get_pos()
 	
-	if (not globals["initial_lap_completed"]) and (globals["idx"] == (globals["plot_count"] - 1)):
+	if (not globals["initial_lap_completed"]) and (globals["pos_idx"] == (globals["plot_count"] - 1)):
 		globals["initial_lap_completed"] = True
 	
 	if globals["item_to_harvest"] == Items.Power and globals["sunflower_count"] == globals["plot_count"]:
@@ -34,7 +34,7 @@ while True:
 		moveTo(sf_x, sf_y)
 		globals["pos_x"] = sf_x
 		globals["pos_y"] = sf_y
-		globals["idx"] = coords_to_idx(globals["pos_x"], globals["pos_y"])
+		globals["pos_idx"] = coords_to_idx(globals["pos_x"], globals["pos_y"])
 		_, globals["sunflower_count"], globals["sunflower_sizes"] = sunflower_harvest()
 	elif can_harvest():
 		if globals["item_to_harvest"] == Items.Pumpkin:
@@ -81,6 +81,6 @@ while True:
 	globals["entity_type"] = get_entity_type()
 	if globals["entity_type"] == Entities.Sunflower:
 		globals["sunflower_count"] += 1
-		globals["sunflower_sizes"][globals["idx"]] = measure()
+		globals["sunflower_sizes"][globals["pos_idx"]] = measure()
 		
 	globals["current_direction"] = move_()

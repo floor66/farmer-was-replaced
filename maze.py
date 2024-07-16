@@ -7,26 +7,6 @@ def reconstruct_path(parents, current, start):
 		current = parents[current]
 	return path[::-1]
 
-def moveTo(dest_x, dest_y):
-	moves = []
-	
-	diff_x = dest_x - get_pos_x()
-	dir = East
-	if diff_x < 0:
-		dir = West
-	for i in range(abs(diff_x)):
-		moves.insert(i, dir)
-	
-	diff_y = dest_y - get_pos_y()
-	dir = North
-	if diff_y < 0:
-		dir = South
-	for i in range(abs(diff_y)):
-		moves.insert(i, dir)
-	
-	for m in moves:
-		move(m)
-
 def get_adjectend_nodes(plot_index, exclude=[]):
 	connected_nodes = []
 	plot_x, plot_y = idx_to_coords(plot_index)

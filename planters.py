@@ -41,7 +41,7 @@ def sunflower_harvest():
 	harvest()
 	
 	sunflower_sizes = globals["sunflower_sizes"]
-	sunflower_sizes[globals["idx"]] = -1
+	sunflower_sizes[globals["pos_idx"]] = -1
 	
 	return success, globals["sunflower_count"] - 1, sunflower_sizes
 

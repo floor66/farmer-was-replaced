@@ -41,26 +41,27 @@ def move_():
 	return new_direction
 
 # Brute force/simple moving
-# Doesnt keep in mind wrapping around etc
-def moveTo(dest_x, dest_y):
-	moves = []
+# Doesnt keep in mind wrapping around etc because maze doesnt allow it (I think?)
+def moveTo(dest_x, dest_y, force_update_pos=False):
+	if force_update_pos:
+		globals["pos_x"], globals["pos_y"], globals["pos_idx"] = get_pos()
 	
-	diff_x = dest_x - globals["pos_x"]
-	dir = East
-	if diff_x < 0:
-		dir = West
-	for i in range(abs(diff_x)):
-		moves.insert(i, dir)
+	diff_x, diff_y = dest_x - globals["pos_x"], dest_y - globals["pos_y"]
+
+	dirs = {-1: West, 1: East}
+	while diff_x != 0:
+		sign = diff_x / abs(diff_x)
+		move(dirs[sign])
+		globals["pos_x"] += sign
+		diff_x = dest_x - globals["pos_x"]
 	
-	diff_y = dest_y - globals["pos_y"]
-	dir = North
-	if diff_y < 0:
-		dir = South
-	for i in range(abs(diff_y)):
-		moves.insert(i, dir)
-	
-	for m in moves:
-		move(m)
+	dirs = {-1: South, 1: North}
+	while diff_y != 0:
+		sign = diff_y / abs(diff_y)
+		move(dirs[sign])
+		globals["pos_y"] += sign
+		diff_y = dest_y - globals["pos_y"]
+
 
 def largest_sunflower_idx():
 	largest = -1
