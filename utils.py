@@ -42,7 +42,7 @@ def move_to_next_plot():
 
 # Brute force/simple moving
 # Doesnt keep in mind wrapping around etc because maze doesnt allow it (I think?)
-def moveTo(dest_x, dest_y, force_update_pos=False):
+def move_to_coords(dest_x, dest_y, force_update_pos=False):
 	if force_update_pos:
 		globals["pos_x"], globals["pos_y"], globals["pos_idx"] = get_pos()
 	
@@ -62,6 +62,9 @@ def moveTo(dest_x, dest_y, force_update_pos=False):
 		globals["pos_y"] += sign
 		diff_y = dest_y - globals["pos_y"]
 
+def move_to_idx(idx, force_update_pos=False):
+	x, y = idx_to_coords(idx)
+	move_to_coords(x, y, force_update_pos)
 
 def largest_sunflower_idx():
 	largest = -1

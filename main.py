@@ -31,8 +31,7 @@ def main():
 		globals["pos_x"], globals["pos_y"], globals["pos_idx"] = get_pos()
 		
 		if globals["item_to_harvest"] == Items.Power and globals["crop_counts"]["sunflower"] == globals["plot_count"]:
-			sf_x, sf_y = idx_to_coords(largest_sunflower_idx())
-			moveTo(sf_x, sf_y)
+			move_to_idx(largest_sunflower_idx())
 			globals["pos_x"] = sf_x
 			globals["pos_y"] = sf_y
 			globals["pos_idx"] = coords_to_idx(globals["pos_x"], globals["pos_y"])
