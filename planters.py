@@ -35,15 +35,15 @@ def sunflowers():
 	return True
 
 def sunflower_harvest():
-	success = True
 	if not can_harvest():
-		success = fertilize()
+		if not fertilize():
+			return False
 	harvest()
 	
-	sunflower_sizes = globals["sunflower_sizes"]
-	sunflower_sizes[globals["pos_idx"]] = -1
+	globals["sunflower_sizes"][globals["pos_idx"]] = -1
+	globals["crop_counts"]["sunflower"] -= 1
 	
-	return success, globals["sunflower_count"] - 1, sunflower_sizes
+	return True
 
 def carrots():
 	if num_items(Items.Carrot_Seed) == 0:
