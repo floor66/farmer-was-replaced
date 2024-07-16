@@ -19,15 +19,41 @@ def solve_bfs(graph, current, target_node, visited=None, path=None):
 	return False
 
 def solve_bfs_it(graph, start, target_node):
-	queue = [start]
+	# Hacky workaround 'cause we cant use classes, so we just use a queue dict!
+	global_queue = {
+		"enqueue_stack": [],
+		"dequeue_stack": []
+	}
+
+	def enqueue(item):
+		global_queue["enqueue_stack"].append(item)
+	
+	def dequeue():
+		if not global_queue["dequeue_stack"]:
+			while global_queue["enqueue_stack"]:
+				global_queue["dequeue_stack"].append(global_queue["enqueue_stack"].pop())
+		
+		if not global_queue["dequeue_stack"]:
+			print("dequeue from empty queue")
+			return foo()
+		
+		return global_queue["dequeue_stack"].pop()
+	
+	def is_empty():
+		return not global_queue["enqueue_stack"] and not global_queue["dequeue_stack"]
+	
+	def size():
+		return len(global_queue["enqueue_stack"]) + len(global_queue["dequeue_stack"])
+
+	enqueue(start)
 	visited = set([start])
 	parents = {}
 	
 	if start == target_node:
 		return reconstruct_path(parents, current, start)
 	
-	while queue:
-		current = queue.pop(0)
+	while not is_empty():
+		current = dequeue()
 		
 		if not (current in graph):
 			continue
@@ -37,7 +63,7 @@ def solve_bfs_it(graph, start, target_node):
 		
 		for neighbour in graph[current]:
 			if not (neighbour in visited):
-				queue.append(neighbour)
+				enqueue(neighbour)
 				visited.add(current)
 				parents[neighbour] = current
 	
