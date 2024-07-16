@@ -1,3 +1,5 @@
+clear()
+
 globals = {
 	"world_size": get_world_size(),
 	"current_direction": North,
@@ -8,9 +10,12 @@ globals = {
 	},
 	"initial_lap_completed": False,
 	"poly_plot": [],
-	"sunflower_sizes": []
+	"sunflower_sizes": [],
+	"pos_x": get_pos_x(),
+	"pos_y": get_pos_y(),
 }
 
+globals["pos_idx"] = coords_to_idx(globals["pos_x"], globals["pos_y"])
 globals["poly_plot"] = init_list(globals["plot_count"], None)
 globals["sunflower_sizes"] = init_list(globals["plot_count"], -1)
 
@@ -88,5 +93,5 @@ def main():
 		loop()
 
 # Entry point
-clear()
-main()
+# main()
+moveTo(5, 5)
