@@ -19,7 +19,7 @@ def init_list(n, withValue=None):
 def infinity():
 	return 1000000000000 * (globals["world_size"]*globals["world_size"])
 
-def move_():
+def move_to_next_plot():
 	new_direction = globals["current_direction"]
 	
 	if globals["current_direction"] == North:

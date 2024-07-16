@@ -83,4 +83,4 @@ while True:
 		globals["sunflower_count"] += 1
 		globals["sunflower_sizes"][globals["pos_idx"]] = measure()
 		
-	globals["current_direction"] = move_()
+	globals["current_direction"] = move_to_next_plot()
