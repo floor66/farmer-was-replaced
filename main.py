@@ -20,8 +20,8 @@ globals["poly_plot"] = init_list(globals["plot_count"], None)
 globals["sunflower_sizes"] = init_list(globals["plot_count"], -1)
 
 # What to harvest?
-globals["item_to_harvest"] = Items.Power
-globals["secondary_item"] = Items.Carrot
+globals["item_to_harvest"] = Items.Wood
+globals["secondary_item"] = Items.Power
 
 def main():
 	def loop():
@@ -93,5 +93,8 @@ def main():
 		loop()
 
 # Entry point
-# main()
-moveTo(5, 5)
+start_count = get_op_count()
+start_time = get_time()
+if maze(25):
+	print(get_op_count() - start_count, "ops in", get_time() - start_time, "sec")
+	# harvest()

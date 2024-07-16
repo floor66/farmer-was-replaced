@@ -1,4 +1,4 @@
-def solve_dfs(graph, graph_key, current, target_node, visited=None, path=None):
+def solve_dfs(graph, current, target_node, visited=None, path=None):
 	if visited == None:
 		visited = set()
 	
@@ -11,17 +11,17 @@ def solve_dfs(graph, graph_key, current, target_node, visited=None, path=None):
 	visited.add(current)
 	
 	for child in graph[current]:
-		if not (child in graph_key):
+		if not (child in graph):
 			continue
 
 		if not (child in visited):
-			child_path = solve_dfs(graph, graph_key, child, target_node, visited, path + [child])
+			child_path = solve_dfs(graph, child, target_node, visited, path + [child])
 			if child_path != False:
 				return child_path
 	
 	return False
 
-def solve_dfs_it(graph, graph_key, start, target_node):
+def solve_dfs_it(graph, start, target_node):
 	stack = [start]
 	visited = set([start])
 	parents = {}
@@ -32,7 +32,7 @@ def solve_dfs_it(graph, graph_key, start, target_node):
 		if current == target_node:
 			return reconstruct_path(parents, current, start)
 
-		if not (current in graph_key):
+		if not (current in graph):
 			continue
 				
 		for child in graph[current]:

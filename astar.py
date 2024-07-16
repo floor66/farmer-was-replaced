@@ -1,4 +1,4 @@
-def solve_astar(graph, graph_key, start, target_node):
+def solve_astar(graph, start, target_node):
 	def h(node):
 		node_x, node_y = idx_to_coords(node)
 		target_node_x, target_node_y = idx_to_coords(target_node)
@@ -11,7 +11,7 @@ def solve_astar(graph, graph_key, start, target_node):
 	
 	gScore = {}
 	fScore = {}
-	for key in graph_key:
+	for key in graph:
 		gScore[key] = infinity()
 		fScore[key] = infinity()
 	
@@ -37,7 +37,7 @@ def solve_astar(graph, graph_key, start, target_node):
 		
 		openSet.remove(current)
 		for neighbor in graph[current]:
-			if not (neighbor in graph_key):
+			if not (neighbor in graph):
 				continue
 			
 			tentative_gScore = gScore[current] + 1

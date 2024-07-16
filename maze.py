@@ -1,5 +1,3 @@
-globals["world_size"] = get_world_size()
-
 def reconstruct_path(parents, current, start):
 	path = []
 	while current != start:
@@ -29,17 +27,16 @@ def get_adjectend_nodes(plot_index, exclude=[]):
 	return connected_nodes
 
 # Use backtracking to find the treasure and build the graph as we go
-def solve_backtrack(graph, graph_key, node, visited=[]):
+def solve_backtrack(graph, node, visited=[]):
 	node_x, node_y = idx_to_coords(node)
 	moveTo(node_x, node_y)
 	visited.append(node)
 	
-	if node in graph_key:
+	if node in graph:
 		candidates = graph[node] + get_adjectend_nodes(node, graph[node])
 	else:
 		candidates = get_adjectend_nodes(node)
 		graph[node] = candidates
-		graph_key.add(node)
 	
 	if get_entity_type() == Entities.Treasure:
 		return True
@@ -48,7 +45,7 @@ def solve_backtrack(graph, graph_key, node, visited=[]):
 		if candidate in visited:
 			continue
 		
-		if solve_backtrack(graph, graph_key, candidate, visited):
+		if solve_backtrack(graph, candidate, visited):
 			return True
 		else:
 			# Dead end reached
@@ -57,8 +54,7 @@ def solve_backtrack(graph, graph_key, node, visited=[]):
 	
 	return False
 
-def maze(solvers, solvernames, maxdepth=50):
-	master_graph_key = set()
+def maze(maxdepth, solvers=None, solvernames=None):
 	master_graph = {}
 	next_treasure_idx = None
 	
@@ -78,38 +74,41 @@ def maze(solvers, solvernames, maxdepth=50):
 		solved = False
 		
 		if next_treasure_idx != None:
-			if next_treasure_idx in master_graph_key and curr_idx in master_graph_key:
+			if next_treasure_idx in master_graph and curr_idx in master_graph:
 				if solvers == None:
-					solvernames = ["dfs (rec)", "dfs (it) ", "bfs (it) ", "a*       "]
-					solvers = [solve_dfs, solve_dfs_it, solve_bfs_it, solve_astar]
+					solvernames = ["dfs (rec)", "dfs (it) ", "bfs (rec)", "bfs (it) ", "a*       "]
+					solvers = [solve_dfs, solve_dfs_it, solve_bfs, solve_bfs_it, solve_astar]
 				
 				paths = []
 				c = 0
 				for solver in solvers:
 					solver_start_time = get_time()
-					paths.append((solvernames[c], solver(master_graph, master_graph_key, curr_idx, next_treasure_idx), get_time() - solver_start_time))
+					paths.append((solvernames[c], solver(master_graph, curr_idx, next_treasure_idx), get_time() - solver_start_time))
 					c += 1
 				
+				shortest_path, shortest_path_len = None, None
 				for result in paths:
 					solvername, path, time = result
 					if path == False:
-						pathlen = -1
+						pathlen = None
 					else:
 						pathlen = len(path)
+						if shortest_path == None or pathlen < shortest_path_len:
+							shortest_path = path
+							shortest_path_len = pathlen
 					
 					quick_print(solvername,":", pathlen, "in", time)
 				quick_print("")
-				pass
 					
-#					if path != False:
-#						for p in path:
-#							p_x, p_y = idx_to_coords(p)
-#							moveTo(p_x, p_y)
-#							master_graph[p] = master_graph[p] + get_adjectend_nodes(p, master_graph[p])
-#						solved = True
+				if shortest_path != None:
+					for p in path:
+						p_x, p_y = idx_to_coords(p)
+						moveTo(p_x, p_y)
+						master_graph[p] = master_graph[p] + get_adjectend_nodes(p, master_graph[p])
+					solved = True
 	
 		if not solved:
-			if solve_backtrack(master_graph, master_graph_key, curr_idx):
+			if solve_backtrack(master_graph, curr_idx):
 				next_treasure_x, next_treasure_y = measure()
 				next_treasure_idx = coords_to_idx(next_treasure_x, next_treasure_y)
 			else:
@@ -120,9 +119,3 @@ def maze(solvers, solvernames, maxdepth=50):
 			next_treasure_idx = coords_to_idx(next_treasure_x, next_treasure_y)
 						
 	return True
-
-start_count = get_op_count()
-start_time = get_time()
-if maze(None, None, 25):
-	print(get_op_count() - start_count, "ops in", get_time() - start_time, "sec")
-	# harvest()
