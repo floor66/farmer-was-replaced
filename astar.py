@@ -4,7 +4,7 @@ def solve_astar(graph, start, target_node, visualize_it=True):
 		target_node_x, target_node_y = idx_to_coords(target_node)
 		dx = abs(target_node_x - node_x)
 		dy = abs(target_node_y - node_y)
-		return abs(dx - dx) + abs(dy - dy)
+		return dx + dy
 
 	openSet = set([start])
 	cameFrom = {}
