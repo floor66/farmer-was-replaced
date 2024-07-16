@@ -26,7 +26,7 @@ def solve_dfs_it(graph, start, target_node):
 	visited = set([start])
 	parents = {}
 	
-	while len(stack) > 0:
+	while stack:
 		current = stack.pop()
 		
 		if current == target_node:

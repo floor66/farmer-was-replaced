@@ -94,6 +94,6 @@ def main():
 # Entry point
 start_count = get_op_count()
 start_time = get_time()
-if maze(25): #, [solve_bfs], ["bfs (rec)"]):
+if maze(25): #, [solve_dfs_it, "dfs (it)"]):
 	print(get_op_count() - start_count, "ops in", get_time() - start_time, "sec")
 	# harvest()

@@ -88,9 +88,9 @@ def maze(maxdepth, solvers=None, solvernames=None):
 				shortest_path, shortest_path_len = None, None
 				for result in paths:
 					solvername, path, time = result
-					if path == False:
-						pathlen = None
-					else:
+					pathlen = None
+
+					if path != False:
 						pathlen = len(path)
 						if shortest_path == None or pathlen < shortest_path_len:
 							shortest_path = path
@@ -98,7 +98,7 @@ def maze(maxdepth, solvers=None, solvernames=None):
 					
 					quick_print(solvername,":", pathlen, "in", time)
 				quick_print("")
-					
+				
 				if shortest_path != None:
 					for p in path:
 						move_to_idx(p)

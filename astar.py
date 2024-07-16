@@ -1,4 +1,4 @@
-def solve_astar(graph, start, target_node, visualize_it=True):
+def solve_astar(graph, start, target_node):
 	def h(node):
 		node_x, node_y = idx_to_coords(node)
 		target_node_x, target_node_y = idx_to_coords(target_node)
@@ -17,7 +17,7 @@ def solve_astar(graph, start, target_node, visualize_it=True):
 	
 	gScore[start] = 0
 	fScore[start] = h(start)
-	while len(openSet) > 0:
+	while openSet:
 		current = None
 		
 		# Find node in openSet with lowest fScore

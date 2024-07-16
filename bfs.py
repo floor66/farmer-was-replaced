@@ -26,7 +26,7 @@ def solve_bfs_it(graph, start, target_node):
 	if start == target_node:
 		return reconstruct_path(parents, current, start)
 	
-	while len(queue) > 0:
+	while queue:
 		current = queue.pop(0)
 		
 		if not (current in graph):
