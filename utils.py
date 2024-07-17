@@ -76,3 +76,40 @@ def largest_sunflower_idx():
 			largest_idx = i
 	
 	return largest_idx
+
+def greedy_sort(L):
+	result = []
+
+	for i in range(len(L)):
+		c = len(result)
+
+		for j in range(len(result)):
+			if L[i] < result[j]:
+				c = j
+				break
+
+		result.insert(c, L[i])
+			
+	return result
+
+def sum(L):
+	c = 0
+	for a in L:
+		c += a
+	return c
+
+def mean(L):
+	if len(L) == 0:
+		return None
+	
+	return sum(L) / len(L)
+
+def median(L):
+	L_sorted = greedy_sort(L)
+	L_sorted_len = len(L_sorted)
+	middle = L_sorted_len // 2
+
+	if L_sorted_len % 2 == 1:
+		return L_sorted[middle]
+	else:
+		return (L_sorted[middle - 1] + L_sorted[middle]) / 2
