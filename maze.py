@@ -64,7 +64,7 @@ def maze(maxdepth, solvers=None, solvernames=None):
 				plant(Entities.Bush)
 			
 			while get_entity_type() != Entities.Hedge:
-				if not trade(Items.Fertilizer):
+				if num_items(Items.Fertilizer) == 0 and not trade(Items.Fertilizer):
 					print("Need fertilizer for Maze!")
 					return False
 				use_item(Items.Fertilizer)
@@ -85,18 +85,20 @@ def maze(maxdepth, solvers=None, solvernames=None):
 					paths.append((solvernames[c], solver(master_graph, curr_idx, next_treasure_idx), get_time() - solver_start_time))
 					c += 1
 				
-				shortest_path, shortest_path_len = None, None
+				shortest_path, shortest_path_len, shortest_name = None, None, None
 				for result in paths:
 					solvername, path, time = result
 					pathlen = None
 
 					if path != False:
-						pathlen = len(path)
+						pathlen = time / len(path)
 						if shortest_path == None or pathlen < shortest_path_len:
+							shortest_name = solvername
 							shortest_path = path
 							shortest_path_len = pathlen
 					
-					quick_print(solvername,":", pathlen, "in", time)
+					quick_print(solvername,":", len(path), "in", time)
+				quick_print("Shortest:", shortest_name)
 				quick_print("")
 				
 				if shortest_path != None:
