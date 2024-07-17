@@ -56,7 +56,6 @@ def solve_bfs_it(graph, start, target_node):
 			continue
 			
 		if current == target_node:
-			quick_print("bfs (it) queue:", get_time() - st, "s and", get_op_count() - so, "ops")
 			return reconstruct_path(parents, current, start)
 		
 		for neighbour in graph[current]:
