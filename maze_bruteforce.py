@@ -1,4 +1,4 @@
-def maze():
+def maze_bruteforce():
 	# First, we get a maze
 	plant(Entities.Bush)
 	next_x, next_y = None, None
