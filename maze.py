@@ -56,6 +56,7 @@ def solve_backtrack(graph, node, visited=[]):
 def maze(maxdepth, solvers=None, solvernames=None):
 	master_graph = {}
 	next_treasure_idx = None
+	solver_performance = {}
 	
 	for maze_iterations in range(maxdepth - 1):
 		# First, we get a maze
@@ -85,23 +86,27 @@ def maze(maxdepth, solvers=None, solvernames=None):
 					paths.append((solvernames[c], solver(master_graph, curr_idx, next_treasure_idx), get_time() - solver_start_time))
 					c += 1
 				
-				shortest_path, shortest_path_len, shortest_name = None, None, None
+				best_score, best_path, best_path_name = None, None, None
 				for result in paths:
 					solvername, path, time = result
-					pathlen = None
 
 					if path != False:
-						pathlen = time / len(path)
-						if shortest_path == None or pathlen < shortest_path_len:
-							shortest_name = solvername
-							shortest_path = path
-							shortest_path_len = pathlen
+						score = len(path) / time
+						if best_path == None or score > best_score:
+							best_score = score
+							best_path_name = solvername
+							best_path = path
+
+						if not solvername in solver_performance:
+							solver_performance[solvername] = [score]
+						else:
+							solver_performance[solvername] += [score]
 					
 					quick_print(solvername,":", len(path), "in", time)
-				quick_print("Shortest:", shortest_name)
+				quick_print("Best:", best_path_name)
 				quick_print("")
 				
-				if shortest_path != None:
+				if best_path != None:
 					for p in path:
 						move_to_idx(p)
 						master_graph[p] = master_graph[p] + get_adjectend_nodes(p, master_graph[p])
@@ -117,5 +122,9 @@ def maze(maxdepth, solvers=None, solvernames=None):
 		else:
 			next_treasure_x, next_treasure_y = measure()
 			next_treasure_idx = coords_to_idx(next_treasure_x, next_treasure_y)
-						
+
+	for solver in solver_performance:
+		scores = solver_performance[solver]
+		quick_print(solver,": min", min(scores)," max ", max(scores), "mean ", mean(scores)," median", median(scores))
+
 	return True
