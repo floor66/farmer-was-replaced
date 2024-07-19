@@ -3,8 +3,8 @@
 # Create an empty min-heap or convert an existing array to a min-heap
 def min_heapify(_arr=[]):
 	_min_heap = {
-		"arr": _arr,
-		"size": len(_arr)
+		"arr": [],
+		"size": 0
 	}
 
 	# Return the index of the parent of the node i
@@ -101,8 +101,9 @@ def min_heapify(_arr=[]):
 	_min_heap["min_heapify_down"] = __min_heapify_down
 
 	# If an array was specified in creating the min-heap, min-heapify it
-	if _min_heap["size"] > 0:
-		_min_heap["min_heapify_down"](0)
+	if len(_arr) > 0:
+		for V in _arr:
+			_min_heap["insert"](V)
 
 	return _min_heap
 
@@ -144,3 +145,30 @@ def test_min_heap():
 	arr_heapified["arr"] = [80, 70, 60, 50, 30, 20, 10]
 
 	quick_print("5", not validate_min_heap(arr_heapified))
+
+# Compare the min-heap to a normal array where we search all values for the lowest
+def benchmark():
+	size = 1000
+	
+	seq_heap = min_heapify()
+	seq = []
+	for _ in range(size):
+		rnd = random() * 1000 // 1
+		seq_heap["insert"](rnd)
+		seq.append(rnd)
+
+	st = get_time()
+	lowest_val = seq_heap["pop_min"]()
+	quick_print(lowest_val)
+	quick_print("min-heap", get_time() - st)
+
+	st = get_time()
+	lowest_val = None
+	for K in range(len(seq)):
+		if lowest_val == None or seq[K] < lowest_val:
+			lowest_val = seq[K]
+	quick_print(lowest_val)
+	quick_print("bruteforce", get_time() - st)
+	
+
+benchmark()
