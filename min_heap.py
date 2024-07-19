@@ -1,9 +1,13 @@
 # Classess implementation of the min-heap (used for A* pathing in the Maze)
 
 # Create an empty min-heap or convert an existing array to a min-heap
-def min_heapify(_arr=[]):
+# We can use the reference array in case we need to refer to e.g. an object in another object/map
+# based on the value the min-heap is sorted on
+# E.g. reference_arr holds the heuristic number and the tree holds the indices refering to those values
+def min_heapify(_arr=[], reference_arr=None):
 	_min_heap = {
 		"arr": [],
+		"reference_arr": reference_arr,
 		"size": 0
 	}
 
@@ -21,21 +25,33 @@ def min_heapify(_arr=[]):
 
 	# Return the value of node i, or return the entire heap if i is unspecified or None
 	def __get(i=None):
+		if _min_heap["size"] == 0:
+			return None
+		
 		if i == None:
-			return _min_heap["arr"]
+			if _min_heap["reference_arr"] == None:
+				return _min_heap["arr"]
+			else:
+				return _min_heap["reference_arr"]
 		elif i < 0:
 			return None
 		else:
-			return _min_heap["arr"][i]
-	
+			if _min_heap["reference_arr"] == None:
+				return _min_heap["arr"][i]
+			else:
+				return _min_heap["reference_arr"][_min_heap["arr"][i]]
+
 	# Return the current minimum value stored in the min-heap
 	def __get_min():
-		return _min_heap["arr"][0]
+		return _min_heap["get"](0)
+	
+	def __in(i):
+		return i in _min_heap["arr"]
 	
 	# Swap values of two nodes around specified by index_a and index_b
 	def __swap(index_a, index_b):
 		temp = _min_heap["arr"][index_b]
-		_min_heap["arr"][index_b] = _min_heap["get"](index_a)
+		_min_heap["arr"][index_b] = _min_heap["arr"][index_a]
 		_min_heap["arr"][index_a] = temp
 	
 	# Insert a value into the min-heap, maintaining min-heap order
@@ -43,6 +59,9 @@ def min_heapify(_arr=[]):
 		_min_heap["arr"].append(elem_value)
 		_min_heap["size"] += 1
 
+		if reference_arr != None:
+			elem_value = _min_heap["reference_arr"][elem_value]
+		
 		elem_index = _min_heap["size"] - 1
 		while elem_index > 0:
 			parent_index = _min_heap["parent"](elem_index)
@@ -57,6 +76,9 @@ def min_heapify(_arr=[]):
 
 	# Pop off the lowest (root) value of the min heap, maintaining min-heap order
 	def __pop_min():
+		if _min_heap["size"] == 0:
+			return None
+
 		# Swap the first (root) and last values so we can pop() the root value off
 		_min_heap["swap"](0, _min_heap["size"] - 1)
 		
@@ -79,26 +101,31 @@ def min_heapify(_arr=[]):
 			left_child = _min_heap["left_child"](curr_index)
 			right_child = _min_heap["right_child"](curr_index)
 
-			if _min_heap["get"](curr_index) > _min_heap["get"](left_child):
+			if left_child <= _min_heap["size"] - 1 and _min_heap["get"](curr_index) > _min_heap["get"](left_child):
 				_min_heap["swap"](curr_index, left_child)
 				curr_index = left_child
-			elif _min_heap["get"](curr_index) > _min_heap["get"](right_child):
+			elif right_child <= _min_heap["size"] - 1 and _min_heap["get"](curr_index) > _min_heap["get"](right_child):
 				_min_heap["swap"](curr_index, right_child)
 				curr_index = right_child
 			else:
 				break
 	
+	def __is_empty():
+		return _min_heap["size"] == 0
+
 	# Hack because we can't use classes, so we use a dict
 	_min_heap["parent"] = __parent
 	_min_heap["left_child"] = __left_child
 	_min_heap["right_child"] = __right_child
 	_min_heap["get"] = __get
+	_min_heap["in"] = __in
 	_min_heap["get_min"] = __get_min
 	_min_heap["swap"] = __swap
 	_min_heap["insert"] = __insert
 	_min_heap["pop_min"] = __pop_min
 	_min_heap["is_leaf"] = __is_leaf
 	_min_heap["min_heapify_down"] = __min_heapify_down
+	_min_heap["is_empty"] = __is_empty
 
 	# If an array was specified in creating the min-heap, min-heapify it
 	if len(_arr) > 0:
@@ -146,6 +173,26 @@ def test_min_heap():
 
 	quick_print("5", not validate_min_heap(arr_heapified))
 
+	# Test the min-heap with an external array that keeps the actual values to be compared
+	# The tree should just contain indices that point to those values in the "reference array"
+	values = [30, 50, 20, 10, 80, 60, 70]
+	indices = list(range(len(values))) # [0..6]
+	arr_heapified = min_heapify(indices, values)
+	quick_print("6", validate_min_heap(arr_heapified))
+
+	values = [30, 50, 20, 10, 80, 60]
+	indices = list(range(len(values)))
+	arr_heapified = min_heapify(indices, values)
+	values.append(70)
+	indices.append(len(indices))
+	arr_heapified["insert"](indices[-1])
+	quick_print("7", validate_min_heap(arr_heapified))
+
+	arr_heapified = min_heapify([10])
+	quick_print(arr_heapified["pop_min"]())
+	quick_print(arr_heapified["pop_min"]())
+	quick_print(arr_heapified["get_min"]())
+
 # Compare the min-heap to a normal array where we search all values for the lowest
 # Note that while retrieving the min value is obviously faster,
 # inserting values is quite slow as the game has a fixed time per operation
@@ -158,6 +205,8 @@ def benchmark():
 		rnd = random() * 1000 // 1
 		rnd_seq.append(rnd)
 
+	# Add every number of the random sequence to the heap or array
+	# and then every iteration also determine the lowest number in the heap or array
 	st = get_time()
 	seq_heap = min_heapify()
 	for K in rnd_seq:
@@ -179,4 +228,5 @@ def benchmark():
 	quick_print(lowest_val)
 	quick_print("bruteforce", get_time() - st)
 
-benchmark()
+# benchmark()
+# test_min_heap()

@@ -102,7 +102,7 @@ def maze(maxdepth, solvers=None, solvernames=None):
 						else:
 							solver_performance[solvername] += [score]
 					
-					quick_print(solvername,":", len(path), "in", time)
+						quick_print(solvername,":", len(path), "in", time)
 				quick_print("Best:", best_path_name)
 				quick_print("")
 				
