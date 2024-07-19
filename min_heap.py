@@ -151,24 +151,32 @@ def test_min_heap():
 # inserting values is quite slow as the game has a fixed time per operation
 # and it costs more operations due to the "class" structure
 def benchmark():
-	size = 10000
+	size = 100
 	
-	seq = []
+	rnd_seq = []
 	for _ in range(size):
 		rnd = random() * 1000 // 1
-		seq.append(rnd)
-	seq_heap = min_heapify(seq)
+		rnd_seq.append(rnd)
 
 	st = get_time()
-	lowest_val = seq_heap["pop_min"]()
+	seq_heap = min_heapify()
+	for K in rnd_seq:
+		seq_heap["insert"](K)
+		lowest_val = seq_heap["get_min"]()
 	quick_print(lowest_val)
 	quick_print("min-heap", get_time() - st)
 	quick_print("")
 
 	st = get_time()
+	seq = []
 	lowest_val = None
-	for K in range(len(seq)):
-		if lowest_val == None or seq[K] < lowest_val:
-			lowest_val = seq[K]
+	for K in rnd_seq:
+		seq.append(K)
+
+		for M in range(len(seq)):
+			if lowest_val == None or seq[M] < lowest_val:
+				lowest_val = seq[M]
 	quick_print(lowest_val)
 	quick_print("bruteforce", get_time() - st)
+
+benchmark()
