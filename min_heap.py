@@ -147,20 +147,23 @@ def test_min_heap():
 	quick_print("5", not validate_min_heap(arr_heapified))
 
 # Compare the min-heap to a normal array where we search all values for the lowest
+# Note that while retrieving the min value is obviously faster,
+# inserting values is quite slow as the game has a fixed time per operation
+# and it costs more operations due to the "class" structure
 def benchmark():
-	size = 1000
+	size = 10000
 	
-	seq_heap = min_heapify()
 	seq = []
 	for _ in range(size):
 		rnd = random() * 1000 // 1
-		seq_heap["insert"](rnd)
 		seq.append(rnd)
+	seq_heap = min_heapify(seq)
 
 	st = get_time()
 	lowest_val = seq_heap["pop_min"]()
 	quick_print(lowest_val)
 	quick_print("min-heap", get_time() - st)
+	quick_print("")
 
 	st = get_time()
 	lowest_val = None
@@ -169,6 +172,3 @@ def benchmark():
 			lowest_val = seq[K]
 	quick_print(lowest_val)
 	quick_print("bruteforce", get_time() - st)
-	
-
-benchmark()
