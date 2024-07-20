@@ -69,6 +69,8 @@ def pumpkins():
 	if globals["entity_type"] != Entities.Pumpkin:
 		plant(Entities.Pumpkin)
 
+# Tries to fertilize the current plot
+# do_wait determines whether to wait for the crop to grow in case we can't buy fertilizer
 def fertilize(do_wait=True):
 	if num_items(Items.Fertilizer) == 0:
 		if not trade(Items.Fertilizer):
@@ -80,4 +82,37 @@ def fertilize(do_wait=True):
 				return False
 
 	use_item(Items.Fertilizer)	
+	return True
+
+def cactus():
+	if num_items(Items.Cactus_Seed) == 0:
+		if not trade(Items.Cactus_Seed):
+			return False
+	
+	if globals["ground_type"] != Grounds.Soil:
+		till()
+		
+	if globals["entity_type"] != Entities.Cactus:
+		plant(Entities.Cactus)
+
+	start_idx = globals["pos_idx"]
+	globals["cactus_sizes"][start_idx] = measure()
+	
+	# Cacti should be <= South and West
+	#                 >= North and East
+	for idx in range(start_idx, -1, -1):
+		move_to_idx(idx)
+		curr_size = measure()
+		cx, cy = idx_to_coords(idx)
+
+		if cy > 0 and measure(South) != None and curr_size < measure(South):
+			swap(South)
+		elif cx > 0 and measure(West) != None and curr_size < measure(West):
+			swap(West)
+		elif cy < globals["world_size"] - 1 and measure(North) != None and curr_size > measure(North):
+			swap(North)
+		elif cx < globals["world_size"] - 1 and measure(East) != None and curr_size > measure(East):
+			swap(East)
+	move_to_idx(start_idx)
+
 	return True
