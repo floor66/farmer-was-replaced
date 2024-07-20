@@ -12,8 +12,8 @@ def solve_astar(graph, start, target_node):
 	gScore = {}
 	fScore = {}
 	for key in graph:
-		gScore[key] = infinity()
-		fScore[key] = infinity()
+		gScore[key] = globals["infinity"]
+		fScore[key] = globals["infinity"]
 	
 	gScore[start] = 0
 	fScore[start] = h(start)

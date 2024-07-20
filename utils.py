@@ -15,10 +15,6 @@ def init_list(n, withValue=None):
 		tmp_list.append(withValue)
 	return tmp_list
 
-# Infinity doesnt exist in the game so we crudely implement it
-def infinity():
-	return 1000000000000 * (globals["world_size"]*globals["world_size"])
-
 def move_to_next_plot():
 	new_direction = globals["current_direction"]
 	
