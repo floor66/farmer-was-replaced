@@ -101,18 +101,27 @@ def cactus():
 	# Cacti should be <= South and West
 	#                 >= North and East
 	for idx in range(start_idx, -1, -1):
-		move_to_idx(idx)
-		curr_size = measure()
+		curr_size = globals["cactus_sizes"][idx]
 		cx, cy = idx_to_coords(idx)
 
-		if cy > 0 and measure(South) != None and curr_size < measure(South):
-			swap(South)
-		elif cx > 0 and measure(West) != None and curr_size < measure(West):
-			swap(West)
-		elif cy < globals["world_size"] - 1 and measure(North) != None and curr_size > measure(North):
-			swap(North)
-		elif cx < globals["world_size"] - 1 and measure(East) != None and curr_size > measure(East):
-			swap(East)
+		neighbors = {
+			North: {"constraint": cy < globals["world_size"] - 1, "coords": (0, 1), "compare_direction": 1},
+			East: {"constraint": cx < globals["world_size"] - 1, "coords": (1, 0), "compare_direction": 1},
+			South: {"constraint": cy > 0, "coords": (0, -1), "compare_direction": -1},
+			West: {"constraint": cx > 0, "coords": (-1, 0), "compare_direction": -1},
+		}
+
+		for dir in neighbors:
+			dir_idx = coords_to_idx(cx + neighbors[dir]["coords"][0], cy + neighbors[dir]["coords"][1])
+			if not (dir_idx in globals["cactus_sizes"]) or not neighbors[dir]["constraint"]:
+				continue
+			
+			if (curr_size * neighbors[dir]["compare_direction"]) > (globals["cactus_sizes"][dir_idx] * neighbors[dir]["compare_direction"]):
+				move_to_idx(idx)
+				swap(dir)
+				globals["cactus_sizes"][idx] = globals["cactus_sizes"][dir_idx]
+				globals["cactus_sizes"][dir_idx] = curr_size
+				break
 	move_to_idx(start_idx)
 
 	return True
