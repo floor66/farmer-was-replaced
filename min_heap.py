@@ -1,4 +1,4 @@
-# Classess implementation of the min-heap (used for A* pathing in the Maze)
+# Classless implementation of the min-heap (used for A* pathing in the Maze)
 
 # Create an empty min-heap or convert an existing array to a min-heap
 # We can use the reference array in case we need to refer to e.g. an object in another object/map
