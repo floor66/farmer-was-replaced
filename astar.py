@@ -7,35 +7,35 @@ def solve_astar(graph, start, target_node):
 		dy = abs(target_node_y - node_y)
 		return dx + dy
 
-	cameFrom = {}
+	came_from = {}
 
-	gScore = {}
-	fScore = {}
+	g_score = {}
+	f_score = {}
 	for key in graph:
-		gScore[key] = globals["infinity"]
-		fScore[key] = globals["infinity"]
+		g_score[key] = globals["infinity"]
+		f_score[key] = globals["infinity"]
 	
-	gScore[start] = 0
-	fScore[start] = h(start)
+	g_score[start] = 0
+	f_score[start] = h(start)
 
-	openSet = min_heapify([start], fScore)
-	while not openSet["is_empty"]():
-		current = openSet["pop_min"]()
+	open_set = min_heapify([start], f_score)
+	while not open_set["is_empty"]():
+		current = open_set["pop_min"]()
 		
 		if current == target_node:
-			return reconstruct_path(cameFrom, current, start)
+			return reconstruct_path(came_from, current, start)
 		
 		for neighbor in graph[current]:
 			if not (neighbor in graph):
 				continue
 			
-			tentative_gScore = gScore[current] + 1
-			if tentative_gScore < gScore[neighbor]:
-				cameFrom[neighbor] = current
-				gScore[neighbor] = tentative_gScore
+			tentative_g_score = g_score[current] + 1
+			if tentative_g_score < g_score[neighbor]:
+				came_from[neighbor] = current
+				g_score[neighbor] = tentative_g_score
 				neighbor_x, neighbor_y = (neighbor // globals["world_size"], neighbor % globals["world_size"])
-				fScore[neighbor] = tentative_gScore + (abs(target_node_x - neighbor_x) + abs(target_node_y - neighbor_y))
-				if not openSet["in"](neighbor):
-					openSet["insert"](neighbor)
+				f_score[neighbor] = tentative_g_score + (abs(target_node_x - neighbor_x) + abs(target_node_y - neighbor_y))
+				if not open_set["in"](neighbor):
+					open_set["insert"](neighbor)
 		
 	return False
