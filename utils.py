@@ -58,6 +58,8 @@ def move_to_coords(dest_x, dest_y, force_update_pos=False):
 		globals["pos_y"] += sign
 		diff_y = dest_y - globals["pos_y"]
 
+	globals["pos_idx"] = coords_to_idx(globals["pos_x"], globals["pos_y"])
+
 def move_to_idx(idx, force_update_pos=False):
 	x, y = idx_to_coords(idx)
 	move_to_coords(x, y, force_update_pos)
