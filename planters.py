@@ -125,3 +125,11 @@ def cactus():
 	move_to_idx(start_idx)
 
 	return True
+
+def dino():
+	if num_items(Items.Egg) == 0:
+		if not trade(Items.Egg):
+			return False
+
+	use_item(Items.Egg)	
+	return True

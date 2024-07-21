@@ -22,7 +22,7 @@ globals["poly_plot"] = init_list(globals["plot_count"], None)
 globals["sunflower_sizes"] = init_list(globals["plot_count"], -1)
 
 # What to harvest?
-globals["item_to_harvest"] = Items.Cactus
+globals["item_to_harvest"] = Items.Bones
 globals["secondary_item"] = Items.Power
 
 def main():
@@ -34,7 +34,11 @@ def main():
 			move_to_idx(largest_sunflower_idx())
 			sunflower_harvest()
 		elif globals["item_to_harvest"] == Items.Cactus:
-			pass
+			if globals["initial_lap_completed"]:
+				harvest()
+				move_to_idx(0)
+				globals["initial_lap_completed"] = False
+				globals["cactus_sizes"] = {}
 		elif can_harvest():
 			if globals["item_to_harvest"] == Items.Pumpkin:
 				if globals["entity_type"] == Entities.Pumpkin:
@@ -72,7 +76,10 @@ def main():
 				pass
 		elif globals["item_to_harvest"] == Items.Cactus:
 			if not cactus():
-				return
+				pass
+		elif globals["item_to_harvest"] == Items.Bones:
+			if not dino():
+				pass
 			
 	def loop():
 		if globals["item_to_harvest"] == Items.Gold:
@@ -81,9 +88,6 @@ def main():
 			if maze(299, [solve_bfs], ["bfs_rec"]):
 				print(get_op_count() - start_count, "ops in", get_time() - start_time, "sec")
 				harvest()
-			return
-
-		if globals["initial_lap_completed"]:
 			return
 
 		globals["world_size"] = get_world_size()
