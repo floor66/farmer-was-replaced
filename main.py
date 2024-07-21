@@ -62,45 +62,6 @@ def main():
 				while get_water() < 1.0:
 					use_item(Items.Water_Tank)
 
-	def planting():
-		map_item_to_planting_fn = {
-			Items.Hay: hay,
-			Items.Wood: tree,
-			Items.Carrot: carrot,
-			Items.Pumpkin: pumpkin,
-			Items.Power: sunflower,
-			Items.Cactus: cactus,
-			Items.Bones: dino
-		}
-
-		map_entity_to_item = {
-			Entities.Grass: Items.Hay,
-			Entities.Bush: Items.Wood,
-			Entities.Tree: Items.Wood,
-			Entities.Carrots: Items.Carrot
-		}
-
-		desired_item = globals["item_to_harvest"]
-		if globals["use_poly"] and globals["pos_idx"] in globals["poly_plot"]:
-			desired_entity = globals["poly_plot"][globals["pos_idx"]]
-			if desired_entity != None:
-				if desired_entity == Entities.Bush:
-					map_item_to_planting_fn[Items.Wood] = bush
-
-				desired_item = map_entity_to_item[desired_entity]
-		
-		success = map_item_to_planting_fn[desired_item]()
-
-		if success and globals["use_poly"]:
-			globals["poly_plot"][globals["pos_idx"]] = None
-			companion = get_companion()
-			if companion != None:
-				companion_type, cx, cy = companion
-				
-				globals["poly_plot"][coords_to_idx(cx, cy)] = companion_type
-
-		return success
-			
 	def loop():
 		if globals["item_to_harvest"] == Items.Gold:
 			start_count = get_op_count()
