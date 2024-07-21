@@ -1,24 +1,7 @@
-def tree():
-	if globals["pos_y"] % 2 == 0 and globals["pos_x"] % 2 == 0:
-		plant(Entities.Tree)
-	else:
-		if globals["secondary_item"] == Items.Wood:
-			plant(Entities.Bush)
-		elif globals["secondary_item"] == Items.Hay:
-			pass
-		elif globals["secondary_item"] == Items.Carrot:
-			carrot()
-		elif globals["secondary_item"] == Items.Power:
-			sunflower()
-		else:
-			rnd = random()
-			if rnd <= 0.25:
-				plant(Entities.Bush)
-			elif rnd > 0.25 and rnd <= 0.50:
-				carrot()
-			elif rnd > 0.50:
-				pass
-	
+def hay():
+	if globals["ground_type"] != Grounds.Turf:
+		till()
+
 	return True
 
 def bush():
@@ -26,6 +9,21 @@ def bush():
 		till()
 
 	plant(Entities.Bush)
+	return True
+
+def tree():
+	if globals["pos_y"] % 2 == 0 and globals["pos_x"] % 2 == 0:
+		plant(Entities.Tree)
+	elif not globals["use_poly"]:
+		if globals["secondary_item"] == Items.Wood:
+			bush()
+		elif globals["secondary_item"] == Items.Hay:
+			pass
+		elif globals["secondary_item"] == Items.Carrot:
+			carrot()
+		elif globals["secondary_item"] == Items.Power:
+			sunflower()
+	
 	return True
 
 def sunflower():

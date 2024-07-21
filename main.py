@@ -17,13 +17,12 @@ globals = {
 }
 
 globals["pos_idx"] = coords_to_idx(globals["pos_x"], globals["pos_y"])
-globals["poly_plot"] = init_list(globals["plot_count"], None)
 globals["sunflower_sizes"] = init_list(globals["plot_count"], -1)
 
 # What to harvest?
-globals["item_to_harvest"] = Items.Wood
+globals["item_to_harvest"] = Items.Hay
 globals["secondary_item"] = Items.Power
-globals["use_poly"] = False
+globals["use_poly"] = True
 
 def main():
 	# Harvesting checks
@@ -55,6 +54,9 @@ def main():
 
 	# Water the plot up to 1.0 if it's < 0.5
 	def watering():
+		if num_unlocked(Unlocks.Watering) == 0:
+			return
+		
 		if globals["item_to_harvest"] != Items.Gold and num_items(Items.Water_Tank) > 500:
 			if get_water() < 0.50:
 				while get_water() < 1.0:
@@ -62,6 +64,7 @@ def main():
 
 	def planting():
 		map_item_to_planting_fn = {
+			Items.Hay: hay,
 			Items.Wood: tree,
 			Items.Carrot: carrot,
 			Items.Pumpkin: pumpkin,
@@ -70,12 +73,33 @@ def main():
 			Items.Bones: dino
 		}
 
+		map_entity_to_item = {
+			Entities.Grass: Items.Hay,
+			Entities.Bush: Items.Wood,
+			Entities.Tree: Items.Wood,
+			Entities.Carrots: Items.Carrot
+		}
+
+		desired_item = globals["item_to_harvest"]
 		if globals["use_poly"] and globals["pos_idx"] in globals["poly_plot"]:
 			desired_entity = globals["poly_plot"][globals["pos_idx"]]
-			if desired_entity == Entities.Bush:
-				map_item_to_planting_fn[Items.Wood] = bush
+			if desired_entity != None:
+				if desired_entity == Entities.Bush:
+					map_item_to_planting_fn[Items.Wood] = bush
+
+				desired_item = map_entity_to_item[desired_entity]
 		
-		return map_item_to_planting_fn[globals["item_to_harvest"]]()
+		success = map_item_to_planting_fn[desired_item]()
+
+		if success and globals["use_poly"]:
+			globals["poly_plot"][globals["pos_idx"]] = None
+			companion = get_companion()
+			if companion != None:
+				companion_type, cx, cy = companion
+				
+				globals["poly_plot"][coords_to_idx(cx, cy)] = companion_type
+
+		return success
 			
 	def loop():
 		if globals["item_to_harvest"] == Items.Gold:
@@ -122,4 +146,6 @@ def main():
 		loop()
 
 # Entry point
+set_farm_size(3)
+set_execution_speed(5)
 main()
