@@ -1,4 +1,4 @@
-def wood():
+def tree():
 	if globals["pos_y"] % 2 == 0 and globals["pos_x"] % 2 == 0:
 		plant(Entities.Tree)
 	else:
@@ -7,21 +7,28 @@ def wood():
 		elif globals["secondary_item"] == Items.Hay:
 			pass
 		elif globals["secondary_item"] == Items.Carrot:
-			carrots()
+			carrot()
 		elif globals["secondary_item"] == Items.Power:
-			sunflowers()
+			sunflower()
 		else:
 			rnd = random()
 			if rnd <= 0.25:
 				plant(Entities.Bush)
 			elif rnd > 0.25 and rnd <= 0.50:
-				carrots()
+				carrot()
 			elif rnd > 0.50:
 				pass
 	
 	return True
 
-def sunflowers():
+def bush():
+	if globals["ground_type"] != Grounds.Turf:
+		till()
+
+	plant(Entities.Bush)
+	return True
+
+def sunflower():
 	if num_items(Items.Sunflower_Seed) == 0:
 		if not trade(Items.Sunflower_Seed):
 			return False
@@ -45,7 +52,7 @@ def sunflower_harvest():
 	
 	return True
 
-def carrots():
+def carrot():
 	if num_items(Items.Carrot_Seed) == 0:
 		if not trade(Items.Carrot_Seed):
 			return False
@@ -58,7 +65,7 @@ def carrots():
 	
 	return True
 
-def pumpkins():
+def pumpkin():
 	if num_items(Items.Pumpkin_Seed) == 0:
 		if not trade(Items.Pumpkin_Seed):
 			return False
@@ -69,6 +76,8 @@ def pumpkins():
 	if globals["entity_type"] != Entities.Pumpkin:
 		plant(Entities.Pumpkin)
 
+	return True
+
 # Tries to fertilize the current plot
 # do_wait determines whether to wait for the crop to grow in case we can't buy fertilizer
 def fertilize(do_wait=True):
@@ -77,7 +86,7 @@ def fertilize(do_wait=True):
 			if do_wait:
 				while True:
 					if can_harvest():
-						return
+						return True
 			else:
 				return False
 

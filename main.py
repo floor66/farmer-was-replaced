@@ -1,5 +1,3 @@
-# clear()
-
 globals = {
 	"world_size": get_world_size(),
 	"current_direction": North,
@@ -9,7 +7,8 @@ globals = {
 		"sunflower": 0
 	},
 	"initial_lap_completed": False,
-	"poly_plot": [],
+	"use_poly": False,
+	"poly_plot": {},
 	"sunflower_sizes": [],
 	"cactus_sizes": {},
 	"pos_x": get_pos_x(),
@@ -22,12 +21,11 @@ globals["poly_plot"] = init_list(globals["plot_count"], None)
 globals["sunflower_sizes"] = init_list(globals["plot_count"], -1)
 
 # What to harvest?
-globals["item_to_harvest"] = Items.Bones
+globals["item_to_harvest"] = Items.Wood
 globals["secondary_item"] = Items.Power
+globals["use_poly"] = False
 
 def main():
-	clear()
-
 	# Harvesting checks
 	def check_harvest():
 		if globals["item_to_harvest"] == Items.Power and globals["crop_counts"]["sunflower"] == globals["plot_count"]:
@@ -63,23 +61,21 @@ def main():
 					use_item(Items.Water_Tank)
 
 	def planting():
-		if globals["item_to_harvest"] == Items.Wood:
-			wood()
-		elif globals["item_to_harvest"] == Items.Carrot:
-			if not carrots():
-				pass
-		elif globals["item_to_harvest"] == Items.Pumpkin:
-			if not pumpkins():
-				pass
-		elif globals["item_to_harvest"] == Items.Power:
-			if not sunflowers():
-				pass
-		elif globals["item_to_harvest"] == Items.Cactus:
-			if not cactus():
-				pass
-		elif globals["item_to_harvest"] == Items.Bones:
-			if not dino():
-				pass
+		map_item_to_planting_fn = {
+			Items.Wood: tree,
+			Items.Carrot: carrot,
+			Items.Pumpkin: pumpkin,
+			Items.Power: sunflower,
+			Items.Cactus: cactus,
+			Items.Bones: dino
+		}
+
+		if globals["use_poly"] and globals["pos_idx"] in globals["poly_plot"]:
+			desired_entity = globals["poly_plot"][globals["pos_idx"]]
+			if desired_entity == Entities.Bush:
+				map_item_to_planting_fn[Items.Wood] = bush
+		
+		return map_item_to_planting_fn[globals["item_to_harvest"]]()
 			
 	def loop():
 		if globals["item_to_harvest"] == Items.Gold:
