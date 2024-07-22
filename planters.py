@@ -5,6 +5,10 @@ def hay():
 	return True
 
 def bush():
+	if num_unlocked(Entities.Bush) == 0:
+		quick_print("ERROR: Entities.Bush not unlocked yet.")
+		return False
+	
 	if globals["ground_type"] != Grounds.Turf:
 		till()
 
@@ -12,6 +16,10 @@ def bush():
 	return True
 
 def tree():
+	if num_unlocked(Entities.Tree) == 0:
+		quick_print("ERROR: Entities.Tree not unlocked yet.")
+		return False
+	
 	if globals["pos_y"] % 2 == 0 and globals["pos_x"] % 2 == 0:
 		plant(Entities.Tree)
 	elif not globals["use_poly"]:
@@ -26,9 +34,20 @@ def tree():
 	
 	return True
 
+def tree_or_bush():
+	if num_unlocked(Entities.Tree) == 0:
+		return bush()
+	else:
+		return tree()
+
 def sunflower():
+	if num_unlocked(Entities.Sunflower) == 0:
+		quick_print("ERROR: Entities.Sunflower not unlocked yet.")
+		return False
+	
 	if num_items(Items.Sunflower_Seed) == 0:
 		if not trade(Items.Sunflower_Seed):
+			quick_print("ERROR: could not buy Items.Sunflower_Seed.")
 			return False
 	
 	if globals["ground_type"] != Grounds.Soil:
@@ -51,8 +70,13 @@ def sunflower_harvest():
 	return True
 
 def carrot():
+	if num_unlocked(Entities.Carrots) == 0:
+		quick_print("ERROR: Entities.Carrots not unlocked yet.")
+		return False
+	
 	if num_items(Items.Carrot_Seed) == 0:
 		if not trade(Items.Carrot_Seed):
+			quick_print("ERROR: could not buy Items.Carrot_Seed.")
 			return False
 		
 	if globals["ground_type"] != Grounds.Soil:
@@ -64,8 +88,13 @@ def carrot():
 	return True
 
 def pumpkin():
+	if num_unlocked(Entities.Pumpkin) == 0:
+		quick_print("ERROR: Entities.Pumpkin not unlocked yet.")
+		return False
+
 	if num_items(Items.Pumpkin_Seed) == 0:
 		if not trade(Items.Pumpkin_Seed):
+			quick_print("ERROR: could not buy Items.Pumpkin_Seed.")
 			return False
 		
 	if globals["ground_type"] != Grounds.Soil:
@@ -80,7 +109,7 @@ def pumpkin():
 # do_wait determines whether to wait for the crop to grow in case we can't buy fertilizer
 def fertilize(do_wait=True):
 	if num_items(Items.Fertilizer) == 0:
-		if not trade(Items.Fertilizer):
+		if num_unlocked(Items.Fertilizer) == 0 or not trade(Items.Fertilizer):
 			if do_wait:
 				while True:
 					if can_harvest():
@@ -91,9 +120,21 @@ def fertilize(do_wait=True):
 	use_item(Items.Fertilizer)	
 	return True
 
+# Water the plot up to 1.0 if it's < 0.5
+def watering():
+	if globals["item_to_harvest"] != Items.Gold and num_items(Items.Water_Tank) > 500:
+		if get_water() < 0.50:
+			while get_water() < 1.0:
+				use_item(Items.Water_Tank)
+
 def cactus():
+	if num_unlocked(Entities.Cactus) == 0:
+		quick_print("ERROR: Entities.Cactus not unlocked yet.")
+		return False
+
 	if num_items(Items.Cactus_Seed) == 0:
 		if not trade(Items.Cactus_Seed):
+			quick_print("ERROR: could not buy Items.Cactus_Seed.")
 			return False
 	
 	if globals["ground_type"] != Grounds.Soil:
@@ -134,8 +175,13 @@ def cactus():
 	return True
 
 def dino():
+	if num_unlocked(Entities.Dinosaur) == 0:
+		quick_print("ERROR: Entities.Dinosaur not unlocked yet.")
+		return False
+
 	if num_items(Items.Egg) == 0:
 		if not trade(Items.Egg):
+			quick_print("ERROR: could not buy Items.Egg.")
 			return False
 
 	use_item(Items.Egg)	
@@ -144,7 +190,7 @@ def dino():
 def planting():
 	map_item_to_planting_fn = {
 		Items.Hay: hay,
-		Items.Wood: tree,
+		Items.Wood: tree_or_bush,
 		Items.Carrot: carrot,
 		Items.Pumpkin: pumpkin,
 		Items.Power: sunflower,
