@@ -58,7 +58,7 @@ def maze(maxdepth, solvers=None, solvernames=None):
 	next_treasure_idx = None
 	solver_performance = {}
 	
-	for maze_iterations in range(maxdepth - 1):
+	for maze_iterations in range(maxdepth):
 		# First, we get a maze
 		if get_entity_type() != Entities.Hedge:
 			if get_entity_type() != Entities.Treasure:
