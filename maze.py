@@ -28,7 +28,7 @@ def get_adjecend_nodes(plot_index, exclude=[]):
 
 # Use backtracking to find the treasure and build the graph as we go
 def solve_backtrack(graph, node, visited=[]):
-	move_to_idx(node)
+	move_to_idx(node, False, False)
 	visited.append(node)
 	
 	if node in graph:
@@ -49,7 +49,7 @@ def solve_backtrack(graph, node, visited=[]):
 		else:
 			# Dead end reached
 			# Step back to the parent node, explore another branch
-			move_to_idx(node)
+			move_to_idx(node, False, False)
 	
 	return False
 
@@ -108,7 +108,7 @@ def maze(maxdepth, solvers=None, solvernames=None):
 				
 				if best_path != None:
 					for p in path:
-						move_to_idx(p)
+						move_to_idx(p, False, False)
 						master_graph[p] = master_graph[p] + get_adjecend_nodes(p, master_graph[p])
 					solved = True
 	
