@@ -13,61 +13,45 @@ globals = {
 	"cactus_sizes": {},
 	"pos_x": get_pos_x(),
 	"pos_y": get_pos_y(),
-	"infinity": 1000000000000 * (get_world_size() * get_world_size())
+	"infinity": 1000000000000 * (get_world_size() * get_world_size()),
+	"item_to_harvest": None,
+	"secondary_item": None
 }
 
 globals["pos_idx"] = coords_to_idx(globals["pos_x"], globals["pos_y"])
 globals["sunflower_sizes"] = init_list(globals["plot_count"], -1)
 
-# What to harvest?
-globals["item_to_harvest"] = Items.Hay
-globals["secondary_item"] = Items.Power
-globals["use_poly"] = True
-
-def main():
-	# Harvesting checks
-	def check_harvest():
-		if globals["item_to_harvest"] == Items.Power and globals["crop_counts"]["sunflower"] == globals["plot_count"]:
-			move_to_idx(largest_sunflower_idx())
-			sunflower_harvest()
-		elif globals["item_to_harvest"] == Items.Cactus:
-			if globals["initial_lap_completed"]:
+# Harvesting checks
+def do_harvest():
+	if globals["item_to_harvest"] == Items.Power and globals["crop_counts"]["sunflower"] == globals["plot_count"]:
+		move_to_idx(largest_sunflower_idx())
+		sunflower_harvest()
+	elif globals["item_to_harvest"] == Items.Cactus:
+		if globals["initial_lap_completed"]:
+			harvest()
+			move_to_idx(0)
+			globals["initial_lap_completed"] = False
+			globals["cactus_sizes"] = {}
+	elif can_harvest():
+		if globals["item_to_harvest"] == Items.Pumpkin:
+			if globals["entity_type"] == Entities.Pumpkin:
+				globals["crop_counts"]["pumpkin"] += 1
+			if globals["crop_counts"]["pumpkin"] == globals["plot_count"]:
 				harvest()
-				move_to_idx(0)
-				globals["initial_lap_completed"] = False
-				globals["cactus_sizes"] = {}
-		elif can_harvest():
-			if globals["item_to_harvest"] == Items.Pumpkin:
-				if globals["entity_type"] == Entities.Pumpkin:
-					globals["crop_counts"]["pumpkin"] += 1
-				if globals["crop_counts"]["pumpkin"] == globals["plot_count"]:
+		else:
+			if globals["secondary_item"] == Items.Power:
+				if globals["entity_type"] == Entities.Sunflower:
+					if globals["initial_lap_completed"] and (measure() >= max(globals["sunflower_sizes"])):
+						sunflower_harvest()
+				else:
 					harvest()
-			else:
-				if globals["secondary_item"] == Items.Power:
-					if globals["entity_type"] == Entities.Sunflower:
-						if globals["initial_lap_completed"] and (measure() >= max(globals["sunflower_sizes"])):
-							sunflower_harvest()
-					else:
-						harvest()
-				elif globals["item_to_harvest"] != Items.Gold:
-					harvest()
+			elif globals["item_to_harvest"] != Items.Gold:
+				harvest()
 
-	# Water the plot up to 1.0 if it's < 0.5
-	def watering():
-		if num_unlocked(Unlocks.Watering) == 0:
-			return
-		
-		if globals["item_to_harvest"] != Items.Gold and num_items(Items.Water_Tank) > 500:
-			if get_water() < 0.50:
-				while get_water() < 1.0:
-					use_item(Items.Water_Tank)
-
-	def loop():
+def loop(goal_fn):
+	while not goal_fn():
 		if globals["item_to_harvest"] == Items.Gold:
-			start_count = get_op_count()
-			start_time = get_time()
 			if maze(299, [solve_bfs], ["bfs_rec"]):
-				print(get_op_count() - start_count, "ops in", get_time() - start_time, "sec")
 				harvest()
 			return
 
@@ -76,7 +60,7 @@ def main():
 		globals["entity_type"] = get_entity_type()
 		globals["pos_x"], globals["pos_y"], globals["pos_idx"] = get_pos()
 
-		check_harvest()
+		do_harvest()
 
 		# Check entity type again as we could have harvested
 		globals["entity_type"] = get_entity_type()
@@ -102,11 +86,14 @@ def main():
 		if next_idx > globals["plot_count"] - 1:
 			next_idx = 0
 		move_to_idx(next_idx)
-	
-	while True:
-		loop()
+
+def main():
+	# set_execution_speed(3)
+	# clear()
+	# globals["pos_x"], globals["pos_y"], globals["pos_idx"] = get_pos()
+	# move_to_coords(0, 9)
+	# move_to_coords(1, 0)
+	run_default_strategy()
 
 # Entry point
-set_farm_size(3)
-set_execution_speed(5)
 main()
