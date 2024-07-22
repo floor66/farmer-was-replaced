@@ -5,7 +5,7 @@ def reconstruct_path(parents, current, start):
 		current = parents[current]
 	return path[::-1]
 
-def get_adjecend_nodes(plot_index, exclude=[]):
+def get_adjacent_nodes(plot_index, exclude=[]):
 	connected_nodes = []
 	plot_x, plot_y = idx_to_coords(plot_index)
 	moves = [North, East, South, West]
@@ -32,9 +32,9 @@ def solve_backtrack(graph, node, visited=[]):
 	visited.append(node)
 	
 	if node in graph:
-		candidates = graph[node] + get_adjecend_nodes(node, graph[node])
+		candidates = graph[node] + get_adjacent_nodes(node, graph[node])
 	else:
-		candidates = get_adjecend_nodes(node)
+		candidates = get_adjacent_nodes(node)
 		graph[node] = candidates
 	
 	if get_entity_type() == Entities.Treasure:
@@ -102,14 +102,14 @@ def maze(maxdepth, solvers=None, solvernames=None):
 						else:
 							solver_performance[solvername] += [score]
 					
-						quick_print(solvername,":", len(path), "in", time)
-				quick_print("Best:", best_path_name)
-				quick_print("")
+				# 		quick_print(solvername,":", len(path), "in", time)
+				# quick_print("Best:", best_path_name)
+				# quick_print("")
 				
 				if best_path != None:
 					for p in path:
 						move_to_idx(p, False, False)
-						master_graph[p] = master_graph[p] + get_adjecend_nodes(p, master_graph[p])
+						master_graph[p] = master_graph[p] + get_adjacent_nodes(p, master_graph[p])
 					solved = True
 	
 		if not solved:
