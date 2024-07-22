@@ -38,32 +38,59 @@ def move_to_next_plot():
 
 # Brute force/simple moving
 # Doesnt keep in mind wrapping around etc because maze doesnt allow it (I think?)
-def move_to_coords(dest_x, dest_y, force_update_pos=False):
+def move_to_coords(dest_x, dest_y, force_update_pos=False, wrap_around=True):
 	if force_update_pos:
 		globals["pos_x"], globals["pos_y"], globals["pos_idx"] = get_pos()
 	
 	diff_x, diff_y = dest_x - globals["pos_x"], dest_y - globals["pos_y"]
-
+	
+	# if we need to move more than half of the board, go the opposite way
 	dirs = {-1: West, 1: East}
-	while diff_x != 0:
+	while globals["pos_x"] != dest_x:
 		sign = diff_x / abs(diff_x)
+		if wrap_around and abs(diff_x) > ((globals["world_size"] - 1) // 2):
+			sign = -sign
 		move(dirs[sign])
-		globals["pos_x"] += sign
-		diff_x = dest_x - globals["pos_x"]
+
+		if wrap_around:
+			if globals["pos_x"] == globals["world_size"] - 1 and dirs[sign] == East:
+				globals["pos_x"] = 0
+			elif globals["pos_x"] == 0 and dirs[sign] == West:
+				globals["pos_x"] = globals["world_size"] - 1
+			else:
+				globals["pos_x"] += sign
+		else:
+			globals["pos_x"] += sign
 	
 	dirs = {-1: South, 1: North}
-	while diff_y != 0:
+	while globals["pos_y"] != dest_y:
 		sign = diff_y / abs(diff_y)
+		if wrap_around and abs(diff_y) > ((globals["world_size"] - 1) // 2):
+			sign = -sign
 		move(dirs[sign])
-		globals["pos_y"] += sign
-		diff_y = dest_y - globals["pos_y"]
+
+		if wrap_around:
+			if globals["pos_y"] == globals["world_size"] - 1 and dirs[sign] == North:
+				globals["pos_y"] = 0
+			elif globals["pos_y"] == 0 and dirs[sign] == South:
+				globals["pos_y"] = globals["world_size"] - 1
+			else:
+				globals["pos_y"] += sign
+		else:
+			globals["pos_y"] += sign
 
 	globals["pos_idx"] = coords_to_idx(globals["pos_x"], globals["pos_y"])
 
-def move_to_idx(idx, force_update_pos=False):
+def move_to_idx(idx, force_update_pos=False, wrap_around=True):
 	x, y = idx_to_coords(idx)
-	move_to_coords(x, y, force_update_pos)
+	move_to_coords(x, y, force_update_pos, wrap_around)
 
+def move_to_next_idx():
+	next_idx = globals["pos_idx"] + 1
+	if next_idx > globals["plot_count"] - 1:
+		next_idx = 0
+	move_to_idx(next_idx)
+	
 def largest_sunflower_idx():
 	largest = -1
 	largest_idx = -1
@@ -111,3 +138,4 @@ def median(L):
 		return L_sorted[middle]
 	else:
 		return (L_sorted[middle - 1] + L_sorted[middle]) / 2
+	
